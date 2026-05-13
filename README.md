@@ -1,90 +1,67 @@
-[![twitter spresense handle][]][twitter spresense badge]
-[![twitter devworld handle][]][twitter devworld badge]
+# 100kinSAT Advance Spresense
 
-# Welcome to SPRESENSE project
+100kinSAT 向け Spresense SDK リポジトリです。
 
-Clone this repository and update submodules.
+## セットアップ
+
+### 1. ツールのインストール
+
+[Spresense SDK セットアップガイド](https://developer.spresense.sony-semicon.com/development-guides/?page=sdk_set_up&lang=ja) の手順に従ってツールをインストールしてください。
+
+```bash
+wget https://raw.githubusercontent.com/sonydevworld/spresense/master/install-tools.sh
+bash install-tools.sh
+source ~/spresenseenv/setup
+```
+
+### 2. リポジトリのクローン
+
+公式の Spresense リポジトリではなく、このリポジトリをクローンしてください。
+
+```bash
+git clone --recursive https://github.com/100kinsat/100kinSAT_advance_spresense.git
+cd 100kinSAT_advance_spresense
+```
+
+すでにクローン済みの場合はサブモジュールを更新してください。
+
+```bash
+git pull
+git submodule update
+```
+
+## 100kinsat/hello のビルドと書き込み
+
+### ビルド
+
+```bash
+cd sdk
+make distclean
+tools/config.py 100kinsat/hello
+make
+```
+
+`sdk/` フォルダに `nuttx.spk` が生成されます。
+
+### ボードへの書き込み
+
+[ボードへの書き込み方法](https://developer.spresense.sony-semicon.com/development-guides/?page=sdk_set_up&lang=ja#_%E3%83%9C%E3%83%BC%E3%83%89%E3%81%B8%E3%81%AE%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF%E6%96%B9%E6%B3%95) に従って書き込んでください。
+
+```bash
+tools/flash.sh -c /dev/ttyUSB0 nuttx.spk
+```
+
+書き込み後、シリアルコンソールで `hello` コマンドを実行すると `Hello, 100kinSAT!!` と表示されます。
+
+## リポジトリ構成
 
 ```
-$ git clone --recursive https://github.com/sonydevworld/spresense.git
-```
-
-# Submodules
-
-```
-spresense                  - This repository
-|-- nuttx                  - NuttX original kernel + SPRESENSE port
+100kinSAT_advance_spresense
+|-- nuttx        - NuttX カーネル (Spresense ポート)
 |-- sdk
-|   `-- apps               - NuttX original application + SPRESENSE port
+|   |-- apps     - NuttX アプリケーション (100kinsat カテゴリを追加)
+|   `-- configs  - ビルド設定
+|       `-- 100kinsat
+|           `-- hello  - 100kinsat/hello 用設定
 `-- externals
-    `-- nnablart
-      `-- nnabla-c-runtime - Neural Network Runtime library
 ```
-
-## Update SDK2.x.x to SDK3.x.x
-
-The URL of the submodule (nuttx, sdk/apps) in the spresense repository has been changed since SDK3.0.0. If you cloned the repository before SDK2.x, please run the following instructions to update the URL of the submodule.
-
-```
-$ cd spresense
-$ git fetch origin
-$ git checkout <remote branch>
-$ git submodule sync
-$ git submodule update
-```
-* `<remote branch>`
-  * For master branch: `origin/master`
-  * For develop branch: `origin/develop`
-
-# Spresense SDK build instructions
-
-Build instructions are documented at [Spresense SDK Getting Started Guide](https://developer.sony.com/develop/spresense/docs/sdk_set_up_en.html).
-
-## Prerequisites
-
-Install the necessary packages and GCC ARM toolchain for cross-compilation.
-```
-$ wget https://raw.githubusercontent.com/sonydevworld/spresense/master/install-tools.sh
-$ bash install-tools.sh
-```
-
-## Build
-
-Go to the folder where you cloned the {SDK_FULL}, and enter the `sdk` folder name:
-``` bash
-$ cd spresense/sdk
-```
-Set up the SDK configuration
-``` bash
-$ tools/config.py examples/hello
-```
-Build the example image:
-``` bash
-$ make
-```
-
-A `nuttx.spk` file appears in the `sdk` folder when this step has successfully finished.
-This file is the final result and can be flashed into the your board.
-
-# Using docker
-
-A pre-compiled docker container is available with all the pre-requisite that is needed in order to build the Spresense SDK.
-
-In order to start using it simply type:
-
-```
-$ source spresense_env.sh
-```
-
-This script will create an alias `spresense` which should proceed the regular SDK build scripts and Make commands.
-
-Examples:
-```
-SpresenseSDK: $ spresense tools/config.py examples/hello
-SpresenseSDK: $ spresense make
-```
-
-[twitter spresense handle]: https://img.shields.io/twitter/follow/SpresensebySony?style=social&logo=twitter
-[twitter spresense badge]: https://twitter.com/intent/follow?screen_name=SpresensebySony
-[twitter devworld handle]: https://img.shields.io/twitter/follow/SonyDevWorld?style=social&logo=twitter
-[twitter devworld badge]: https://twitter.com/intent/follow?screen_name=SonyDevWorld
